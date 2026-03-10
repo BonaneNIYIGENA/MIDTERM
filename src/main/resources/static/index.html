@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialist Doctor Booking System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin-bottom: 30px; border: 1px solid #ccc; padding: 20px; }
+        input, button { margin: 5px; padding: 8px; }
+        .result { margin-top: 10px; background: #f9f9f9; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Specialist Doctor Booking System - Frontend Test</h1>
+
+    <div class="section">
+        <h2>1. Create Location</h2>
+        <input type="text" id="province" placeholder="Province">
+        <input type="text" id="district" placeholder="District">
+        <input type="text" id="sector" placeholder="Sector">
+        <input type="text" id="cell" placeholder="Cell">
+        <input type="text" id="village" placeholder="Village">
+        <button onclick="createLocation()">Create Location</button>
+        <div id="locationResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Register User</h2>
+        <input type="text" id="userName" placeholder="Name">
+        <input type="email" id="userEmail" placeholder="Email">
+        <input type="text" id="userPhone" placeholder="Phone">
+        <input type="text" id="userAddress" placeholder="Address">
+        <input type="number" id="userLocationId" placeholder="Location ID">
+        <button onclick="registerUser()">Register User</button>
+        <div id="userResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Add Doctor</h2>
+        <input type="text" id="doctorName" placeholder="Name">
+        <input type="email" id="doctorEmail" placeholder="Email">
+        <input type="text" id="doctorPhone" placeholder="Phone">
+        <input type="text" id="doctorSpecialty" placeholder="Specialty">
+        <input type="number" id="doctorExperience" placeholder="Experience Years">
+        <input type="text" id="doctorHospital" placeholder="Hospital Name">
+        <input type="text" id="doctorHospitalAddress" placeholder="Hospital Address">
+        <input type="number" id="doctorLocationId" placeholder="Location ID">
+        <button onclick="addDoctor()">Add Doctor</button>
+        <div id="doctorResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>3b. Doctor CRUD</h2>
+        <input type="number" id="doctorIdForCrud" placeholder="Doctor ID">
+        <button onclick="getDoctorById()">Get Doctor</button>
+        <button onclick="updateDoctor()">Update Doctor</button>
+        <button onclick="deleteDoctor()">Delete Doctor</button>
+        <div id="doctorCrudResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Create Schedule</h2>
+        <input type="number" id="scheduleDoctorId" placeholder="Doctor ID">
+        <input type="date" id="scheduleDate">
+        <input type="time" id="scheduleStartTime">
+        <input type="time" id="scheduleEndTime">
+        <button onclick="createSchedule()">Create Schedule</button>
+        <div id="scheduleResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>4b. Schedule CRUD</h2>
+        <input type="number" id="scheduleIdForCrud" placeholder="Schedule ID">
+        <input type="number" id="scheduleDoctorIdForUpdate" placeholder="Doctor ID (for update)">
+        <input type="date" id="scheduleDateForUpdate">
+        <input type="time" id="scheduleStartTimeForUpdate">
+        <input type="time" id="scheduleEndTimeForUpdate">
+        <button onclick="getScheduleById()">Get Schedule</button>
+        <button onclick="getAllSchedules()">Get All Schedules</button>
+        <button onclick="getSchedulesByDoctor()">Get by Doctor</button>
+        <button onclick="updateSchedule()">Update Schedule</button>
+        <button onclick="deleteSchedule()">Delete Schedule</button>
+        <div id="scheduleCrudResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>5. View Available Slots</h2>
+        <input type="number" id="availableDoctorId" placeholder="Doctor ID">
+        <button onclick="getAvailableSlots()">Get Available Slots</button>
+        <div id="availableResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>6. Book Appointment</h2>
+        <input type="number" id="bookUserId" placeholder="User ID">
+        <input type="number" id="bookDoctorId" placeholder="Doctor ID">
+        <input type="number" id="bookScheduleId" placeholder="Schedule ID">
+        <input type="text" id="bookNotes" placeholder="Notes">
+        <button onclick="bookAppointment()">Book Appointment</button>
+        <div id="bookResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>6b. Appointment CRUD</h2>
+        <input type="number" id="appointmentIdForCrud" placeholder="Appointment ID">
+        <button onclick="getAppointmentById()">Get Appointment</button>
+        <button onclick="getAllAppointments()">Get All Appointments</button>
+        <button onclick="getAppointmentsByDoctor()">Get Appointments by Doctor</button>
+        <button onclick="getAppointmentsByUser()">Get Appointments by User</button>
+        <button onclick="deleteAppointment()">Delete Appointment</button>
+        <div id="appointmentCrudResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>7. Update Appointment Status</h2>
+        <input type="number" id="statusAppointmentId" placeholder="Appointment ID">
+        <select id="statusSelect">
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="CANCELLED">CANCELLED</option>
+        </select>
+        <button onclick="updateStatus()">Update Status</button>
+        <div id="statusResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>8. Write Report</h2>
+        <input type="number" id="reportAppointmentId" placeholder="Appointment ID">
+        <input type="text" id="reportDiagnosis" placeholder="Diagnosis">
+        <input type="text" id="reportPrescription" placeholder="Prescription">
+        <input type="date" id="reportFollowUpDate">
+        <input type="text" id="reportRemarks" placeholder="Remarks">
+        <button onclick="writeReport()">Write Report</button>
+        <div id="reportResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>8b. Report CRUD</h2>
+        <input type="number" id="reportAppointmentIdForGet" placeholder="Appointment ID">
+        <button onclick="getReport()">Get Report</button>
+        <button onclick="updateReport()">Update Report</button>
+        <div id="reportCrudResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>9. Get Doctors (Paginated)</h2>
+        <input type="number" id="page" placeholder="Page" value="0">
+        <input type="number" id="size" placeholder="Size" value="5">
+        <input type="text" id="sortBy" placeholder="Sort By" value="name">
+        <button onclick="getDoctors()">Get Doctors</button>
+        <div id="doctorsResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>10. Get Users by Province</h2>
+        <input type="text" id="provinceQuery" placeholder="Province">
+        <button onclick="getUsersByProvince()">Get Users</button>
+        <div id="provinceResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const options = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) options.body = JSON.stringify(body);
+            const response = await fetch(`${API_BASE}${endpoint}`, options);
+            if (!response.ok) throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            return response.json();
+        }
+
+        function createLocation() {
+            const data = {
+                province: document.getElementById('province').value,
+                district: document.getElementById('district').value,
+                sector: document.getElementById('sector').value,
+                cell: document.getElementById('cell').value,
+                village: document.getElementById('village').value
+            };
+            apiCall('/locations', 'POST', data)
+                .then(result => document.getElementById('locationResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('locationResult').textContent = error.message);
+        }
+
+        function registerUser() {
+            const data = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                phone: document.getElementById('userPhone').value,
+                address: document.getElementById('userAddress').value,
+                locationId: parseInt(document.getElementById('userLocationId').value)
+            };
+            apiCall('/users', 'POST', data)
+                .then(result => document.getElementById('userResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('userResult').textContent = error.message);
+        }
+
+        function addDoctor() {
+            const data = {
+                name: document.getElementById('doctorName').value,
+                email: document.getElementById('doctorEmail').value,
+                phone: document.getElementById('doctorPhone').value,
+                specialty: document.getElementById('doctorSpecialty').value,
+                experienceYears: parseInt(document.getElementById('doctorExperience').value),
+                hospitalName: document.getElementById('doctorHospital').value,
+                hospitalAddress: document.getElementById('doctorHospitalAddress').value,
+                locationId: parseInt(document.getElementById('doctorLocationId').value)
+            };
+            apiCall('/doctors', 'POST', data)
+                .then(result => document.getElementById('doctorResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('doctorResult').textContent = error.message);
+        }
+
+        function createSchedule() {
+            const data = {
+                doctorId: parseInt(document.getElementById('scheduleDoctorId').value),
+                date: document.getElementById('scheduleDate').value,
+                startTime: document.getElementById('scheduleStartTime').value,
+                endTime: document.getElementById('scheduleEndTime').value
+            };
+            apiCall('/schedules', 'POST', data)
+                .then(result => document.getElementById('scheduleResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('scheduleResult').textContent = error.message);
+        }
+
+        function getAvailableSlots() {
+            const doctorId = document.getElementById('availableDoctorId').value;
+            apiCall(`/schedules/available/${doctorId}`)
+                .then(result => document.getElementById('availableResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('availableResult').textContent = error.message);
+        }
+
+        function bookAppointment() {
+            const data = {
+                userId: parseInt(document.getElementById('bookUserId').value),
+                doctorId: parseInt(document.getElementById('bookDoctorId').value),
+                scheduleId: parseInt(document.getElementById('bookScheduleId').value),
+                notes: document.getElementById('bookNotes').value
+            };
+            apiCall('/appointments', 'POST', data)
+                .then(result => document.getElementById('bookResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('bookResult').textContent = error.message);
+        }
+
+        function updateStatus() {
+            const id = document.getElementById('statusAppointmentId').value;
+            const status = document.getElementById('statusSelect').value;
+            apiCall(`/appointments/${id}/status?status=${status}`, 'PATCH')
+                .then(result => document.getElementById('statusResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('statusResult').textContent = error.message);
+        }
+
+        function writeReport() {
+            const data = {
+                diagnosis: document.getElementById('reportDiagnosis').value,
+                prescription: document.getElementById('reportPrescription').value,
+                followUpDate: document.getElementById('reportFollowUpDate').value,
+                remarks: document.getElementById('reportRemarks').value
+            };
+            const id = document.getElementById('reportAppointmentId').value;
+            apiCall(`/appointments/${id}/report`, 'POST', data)
+                .then(result => document.getElementById('reportResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('reportResult').textContent = error.message);
+        }
+
+        function getDoctors() {
+            const page = document.getElementById('page').value;
+            const size = document.getElementById('size').value;
+            const sortBy = document.getElementById('sortBy').value;
+            apiCall(`/doctors?page=${page}&size=${size}&sortBy=${sortBy}`)
+                .then(result => document.getElementById('doctorsResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('doctorsResult').textContent = error.message);
+        }
+
+        function getUsersByProvince() {
+            const province = document.getElementById('provinceQuery').value;
+            apiCall(`/users/province/${province}`)
+                .then(result => document.getElementById('provinceResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('provinceResult').textContent = error.message);
+        }
+
+        // Doctor CRUD
+        function getDoctorById() {
+            const id = document.getElementById('doctorIdForCrud').value;
+            apiCall(`/doctors/${id}`)
+                .then(result => document.getElementById('doctorCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('doctorCrudResult').textContent = error.message);
+        }
+
+        function updateDoctor() {
+            const id = document.getElementById('doctorIdForCrud').value;
+            const data = {
+                name: document.getElementById('doctorName').value,
+                email: document.getElementById('doctorEmail').value,
+                phone: document.getElementById('doctorPhone').value,
+                specialty: document.getElementById('doctorSpecialty').value,
+                experienceYears: parseInt(document.getElementById('doctorExperience').value),
+                hospitalName: document.getElementById('doctorHospital').value,
+                hospitalAddress: document.getElementById('doctorHospitalAddress').value,
+                locationId: parseInt(document.getElementById('doctorLocationId').value)
+            };
+            apiCall(`/doctors/${id}`, 'PUT', data)
+                .then(result => document.getElementById('doctorCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('doctorCrudResult').textContent = error.message);
+        }
+
+        function deleteDoctor() {
+            const id = document.getElementById('doctorIdForCrud').value;
+            apiCall(`/doctors/${id}`, 'DELETE')
+                .then(() => document.getElementById('doctorCrudResult').textContent = 'Doctor deleted successfully')
+                .catch(error => document.getElementById('doctorCrudResult').textContent = error.message);
+        }
+
+        // Schedule CRUD
+        function getScheduleById() {
+            const id = document.getElementById('scheduleIdForCrud').value;
+            apiCall(`/schedules/${id}`)
+                .then(result => document.getElementById('scheduleCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('scheduleCrudResult').textContent = error.message);
+        }
+
+        function getAllSchedules() {
+            apiCall('/schedules')
+                .then(result => document.getElementById('scheduleCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('scheduleCrudResult').textContent = error.message);
+        }
+
+        function getSchedulesByDoctor() {
+            const doctorId = document.getElementById('scheduleDoctorIdForUpdate').value;
+            apiCall(`/schedules/doctor/${doctorId}`)
+                .then(result => document.getElementById('scheduleCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('scheduleCrudResult').textContent = error.message);
+        }
+
+        function updateSchedule() {
+            const id = document.getElementById('scheduleIdForCrud').value;
+            const data = {
+                doctorId: parseInt(document.getElementById('scheduleDoctorIdForUpdate').value),
+                date: document.getElementById('scheduleDateForUpdate').value,
+                startTime: document.getElementById('scheduleStartTimeForUpdate').value,
+                endTime: document.getElementById('scheduleEndTimeForUpdate').value
+            };
+            apiCall(`/schedules/${id}`, 'PUT', data)
+                .then(result => document.getElementById('scheduleCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('scheduleCrudResult').textContent = error.message);
+        }
+
+        function deleteSchedule() {
+            const id = document.getElementById('scheduleIdForCrud').value;
+            apiCall(`/schedules/${id}`, 'DELETE')
+                .then(() => document.getElementById('scheduleCrudResult').textContent = 'Schedule deleted successfully')
+                .catch(error => document.getElementById('scheduleCrudResult').textContent = error.message);
+        }
+
+        // Appointment CRUD
+        function getAppointmentById() {
+            const id = document.getElementById('appointmentIdForCrud').value;
+            apiCall(`/appointments/${id}`)
+                .then(result => document.getElementById('appointmentCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('appointmentCrudResult').textContent = error.message);
+        }
+
+        function getAllAppointments() {
+            apiCall('/appointments')
+                .then(result => document.getElementById('appointmentCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('appointmentCrudResult').textContent = error.message);
+        }
+
+        function getAppointmentsByDoctor() {
+            const doctorId = document.getElementById('appointmentIdForCrud').value;
+            apiCall(`/appointments/doctor/${doctorId}`)
+                .then(result => document.getElementById('appointmentCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('appointmentCrudResult').textContent = error.message);
+        }
+
+        function getAppointmentsByUser() {
+            const userId = document.getElementById('appointmentIdForCrud').value;
+            apiCall(`/appointments/user/${userId}`)
+                .then(result => document.getElementById('appointmentCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('appointmentCrudResult').textContent = error.message);
+        }
+
+        function deleteAppointment() {
+            const id = document.getElementById('appointmentIdForCrud').value;
+            apiCall(`/appointments/${id}`, 'DELETE')
+                .then(() => document.getElementById('appointmentCrudResult').textContent = 'Appointment deleted successfully')
+                .catch(error => document.getElementById('appointmentCrudResult').textContent = error.message);
+        }
+
+        // Report CRUD
+        function getReport() {
+            const appointmentId = document.getElementById('reportAppointmentIdForGet').value;
+            apiCall(`/appointments/${appointmentId}/report`)
+                .then(result => document.getElementById('reportCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('reportCrudResult').textContent = error.message);
+        }
+
+        function updateReport() {
+            const appointmentId = document.getElementById('reportAppointmentIdForGet').value;
+            const data = {
+                diagnosis: document.getElementById('reportDiagnosis').value,
+                prescription: document.getElementById('reportPrescription').value,
+                followUpDate: document.getElementById('reportFollowUpDate').value,
+                remarks: document.getElementById('reportRemarks').value
+            };
+            apiCall(`/appointments/${appointmentId}/report`, 'PUT', data)
+                .then(result => document.getElementById('reportCrudResult').textContent = JSON.stringify(result, null, 2))
+                .catch(error => document.getElementById('reportCrudResult').textContent = error.message);
+        }
+    </script>
+</body>
+</html>
