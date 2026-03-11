@@ -23,8 +23,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already registered");
         }
-        Location location = locationRepository.findById(request.getLocationId())
-            .orElseThrow(() -> new ResourceNotFoundException("Location not found"));
+        Location location = null;
+        if (request.getLocationId() != null) {
+            location = locationRepository.findById(request.getLocationId())
+                .orElseThrow(() -> new ResourceNotFoundException("Location not found"));
+        }
 
         User user = new User();
         user.setName(request.getName());
@@ -36,6 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public List<User> getUsersByProvince(String province) {
         return userRepository.findByLocation_Province(province);
     }
@@ -44,5 +52,35 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public User updateUser(Long id, UserRequest request) {
+        User user = getUserById(id);
+        
+        // Check if email is being changed to an existing email
+        if (!user.getEmail().equals(request.getEmail()) && 
+            userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
+        
+        Location location = null;
+        if (request.getLocationId() != null) {
+            location = locationRepository.findById(request.getLocationId())
+                .orElseThrow(() -> new ResourceNotFoundException("Location not found"));
+        }
+        
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setLocation(location);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
+        userRepository.delete(user);
     }
 }

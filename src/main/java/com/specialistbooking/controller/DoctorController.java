@@ -39,6 +39,23 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.getDoctorsBySpecialty(specialty));
     }
 
+    @GetMapping("/province/{province}")
+    public ResponseEntity<List<Doctor>> byProvince(@PathVariable String province) {
+        return ResponseEntity.ok(doctorService.getDoctorsByProvince(province));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Doctor>> search(
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String province) {
+        return ResponseEntity.ok(doctorService.searchDoctors(specialty, province));
+    }
+
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity<List<Doctor>> searchByName(@PathVariable String name) {
+        return ResponseEntity.ok(doctorService.searchByName(name));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Doctor> update(@PathVariable Long id, @RequestBody DoctorRequest request) {
         return ResponseEntity.ok(doctorService.updateDoctor(id, request));

@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpecBooking - Admin Portal</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- Portal Wrapper -->
+    <div class="portal-wrapper">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">
+                        <span class="material-symbols-outlined">admin_panel_settings</span>
+                    </div>
+                    <div>
+                        <h1>SpecBooking</h1>
+                        <span class="subtitle">Admin Portal</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a href="#" class="nav-item active" data-page="dashboard">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="analytics">
+                        <span class="material-symbols-outlined">analytics</span>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="#" class="nav-item" data-page="users">
+                        <span class="material-symbols-outlined">group</span>
+                        <span>Users</span>
+                        <span class="badge" id="user-count">0</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="doctors">
+                        <span class="material-symbols-outlined">stethoscope</span>
+                        <span>Doctors</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="appointments">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        <span>Appointments</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="locations">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <span>Locations</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item" data-page="reports">
+                        <span class="material-symbols-outlined">description</span>
+                        <span>Reports</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="settings">
+                        <span class="material-symbols-outlined">settings</span>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="sidebar-user" id="sidebar-user">
+                    <div class="avatar" id="user-avatar">
+                        <span id="user-initials">AD</span>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name" id="user-name">Administrator</div>
+                        <div class="user-role">System Admin</div>
+                    </div>
+                    <span class="material-symbols-outlined">expand_more</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content Wrapper -->
+        <div class="main-wrapper">
+            
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="header-btn" id="menu-toggle">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <div class="header-breadcrumb">
+                        <a href="#">Admin</a>
+                        <span class="separator">/</span>
+                        <span id="current-page-title">Dashboard</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <span class="material-symbols-outlined search-icon">search</span>
+                        <input type="text" class="search-input" placeholder="Search users, doctors...">
+                    </div>
+                    <button class="header-btn" id="notifications-btn">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="badge-dot"></span>
+                    </button>
+                    <div class="header-avatar" id="header-avatar">
+                        <span id="header-initials">AD</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content -->
+            <main class="main-content">
+                
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1>Admin Dashboard</h1>
+                    <p>System overview and management controls</p>
+                    <div class="page-header-actions">
+                        <button class="btn btn-secondary" onclick="exportData()">
+                            <span class="material-symbols-outlined">download</span>
+                            Export Data
+                        </button>
+                        <button class="btn btn-primary" onclick="openAddLocationModal()">
+                            <span class="material-symbols-outlined">add</span>
+                            Add Location
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card animate-slideInUp">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--info);">
+                                <span class="material-symbols-outlined">group</span>
+                            </div>
+                            <div class="stat-change positive">
+                                <span class="material-symbols-outlined">trending_up</span>
+                                +12%
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-users">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    
+                    <div class="stat-card animate-slideInUp" style="animation-delay: 0.1s;">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                                <span class="material-symbols-outlined">stethoscope</span>
+                            </div>
+                            <div class="stat-change positive">Active</div>
+                        </div>
+                        <div class="stat-value" id="stat-doctors">0</div>
+                        <div class="stat-label">Registered Doctors</div>
+                    </div>
+                    
+                    <div class="stat-card animate-slideInUp" style="animation-delay: 0.2s;">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent);">
+                                <span class="material-symbols-outlined">calendar_month</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-appointments">0</div>
+                        <div class="stat-label">Total Appointments</div>
+                    </div>
+                    
+                    <div class="stat-card animate-slideInUp" style="animation-delay: 0.3s;">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                                <span class="material-symbols-outlined">location_on</span>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-locations">0</div>
+                        <div class="stat-label">Service Locations</div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="card mb-6">
+                    <div class="card-header">
+                        <h3>Management Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions-grid">
+                            <div class="quick-action-card" onclick="openUserModal()">
+                                <div class="icon-wrapper indigo">
+                                    <span class="material-symbols-outlined">manage_accounts</span>
+                                </div>
+                                <div>
+                                    <h4>User Management</h4>
+                                    <p>Manage roles & access</p>
+                                </div>
+                            </div>
+                            <div class="quick-action-card" onclick="showPageContent('doctors')">
+                                <div class="icon-wrapper blue">
+                                    <span class="material-symbols-outlined">clinical_notes</span>
+                                </div>
+                                <div>
+                                    <h4>Doctor Verification</h4>
+                                    <p>Verify credentials</p>
+                                </div>
+                            </div>
+                            <div class="quick-action-card" onclick="showPageContent('reports')">
+                                <div class="icon-wrapper amber">
+                                    <span class="material-symbols-outlined">analytics</span>
+                                </div>
+                                <div>
+                                    <h4>System Reports</h4>
+                                    <p>Generate analytics</p>
+                                </div>
+                            </div>
+                            <div class="quick-action-card" onclick="openAddLocationModal()">
+                                <div class="icon-wrapper green">
+                                    <span class="material-symbols-outlined">add_location</span>
+                                </div>
+                                <div>
+                                    <h4>Add Location</h4>
+                                    <p>New service area</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Two Column Layout -->
+                <div class="grid grid-cols-2 gap-6">
+                    
+                    <!-- Recent Users -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Users</h3>
+                            <a href="#" class="text-primary text-sm font-semibold" onclick="openUserModal()">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table class="table" id="users-table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-tbody">
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-4">Loading users...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Appointments -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Appointments</h3>
+                            <a href="#" class="text-primary text-sm font-semibold" onclick="showPageContent('appointments')">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table class="table" id="appointments-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient</th>
+                                            <th>Doctor</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="appointments-tbody">
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-4">Loading appointments...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Locations Section -->
+                <div class="card mt-6">
+                    <div class="card-header">
+                        <h3>Service Locations</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openAddLocationModal()">
+                            <span class="material-symbols-outlined">add</span>
+                            Add Location
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table class="table" id="locations-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Province</th>
+                                        <th>District</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="locations-tbody">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">Loading locations...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </main>
+        </div>
+    </div>
+    
+    <!-- User Management Modal -->
+    <div class="modal-backdrop" id="user-modal-backdrop"></div>
+    <div class="modal modal-lg" id="user-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">User Management</h3>
+            <button class="modal-close" onclick="closeUserModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+            <div class="search-box mb-4" style="width: 100%;">
+                <span class="material-symbols-outlined search-icon">search</span>
+                <input type="text" class="search-input" id="user-search" placeholder="Search users..." style="width: 100%;">
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-modal-tbody">
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeUserModal()">Close</button>
+        </div>
+    </div>
+    
+    <!-- Add Location Modal -->
+    <div class="modal-backdrop" id="location-modal-backdrop"></div>
+    <div class="modal" id="location-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Add Location</h3>
+            <button class="modal-close" onclick="closeLocationModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="location-form">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Province</label>
+                        <select class="form-select" id="location-province" required>
+                            <option value="">Select Province</option>
+                            <option value="Kigali">Kigali</option>
+                            <option value="Northern">Northern</option>
+                            <option value="Southern">Southern</option>
+                            <option value="Eastern">Eastern</option>
+                            <option value="Western">Western</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">District</label>
+                        <select class="form-select" id="location-district" required>
+                            <option value="">Select District</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sector</label>
+                    <input type="text" class="form-input" id="location-sector" placeholder="Enter sector name" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Cell</label>
+                        <input type="text" class="form-input" id="location-cell" placeholder="Enter cell name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Village</label>
+                        <input type="text" class="form-input" id="location-village" placeholder="Enter village name" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeLocationModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitLocation()">
+                <span class="material-symbols-outlined">check</span>
+                Save Location
+            </button>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal-backdrop" id="profile-modal-backdrop"></div>
+    <div class="modal" id="profile-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Admin Profile</h3>
+            <button class="modal-close" onclick="closeProfileModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center mb-6">
+                <div class="avatar avatar-xl" style="margin: 0 auto var(--space-4);">
+                    <span id="profile-initials">AD</span>
+                </div>
+                <h3 id="profile-name">Administrator</h3>
+                <p class="text-muted" id="profile-email">admin@specbooking.com</p>
+                <span class="badge badge-error">System Admin</span>
+            </div>
+            <div style="border-top: 1px solid var(--border-light); padding-top: var(--space-4);">
+                <div class="flex justify-between items-center py-3">
+                    <span class="text-muted">System Version</span>
+                    <span class="font-semibold">v1.0.0</span>
+                </div>
+                <div class="flex justify-between items-center py-3">
+                    <span class="text-muted">Last Backup</span>
+                    <span class="font-semibold" id="last-backup">Never</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-error w-full" onclick="logout()">
+                <span class="material-symbols-outlined">logout</span>
+                Logout
+            </button>
+        </div>
+    </div>
+    
+    <!-- API Script -->
+    <script src="js/api.js"></script>
+    
+    <!-- Page Script -->
+    <script>
+        let users = [];
+        let doctors = [];
+        let appointments = [];
+        let locations = [];
+        
+        // District options by province
+        const districtsByProvince = {
+            'Kigali': ['Gasabo', 'Kicukiro', 'Nyarugenge'],
+            'Northern': ['Burera', 'Gakenke', 'Gicumbi', 'Musanze', 'Rulindo'],
+            'Southern': ['Gisagara', 'Huye', 'Kamonyi', 'Muhanga', 'Nyamagabe', 'Nyanza', 'Nyaruguru', 'Ruhango'],
+            'Eastern': ['Bugesera', 'Gatsibo', 'Kayonza', 'Kirehe', 'Ngoma', 'Nyagatare', 'Rwamagana'],
+            'Western': ['Karongi', 'Ngororero', 'Nyabihu', 'Nyamasheke', 'Rubavu', 'Rusizi', 'Rutsiro']
+        };
+        
+        // Check auth on load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!requireAuth()) return;
+            if (!requireRole(['ADMIN'])) return;
+            
+            initDashboard();
+        });
+        
+        // Initialize Dashboard
+        async function initDashboard() {
+            const user = api.getCurrentUser();
+            
+            // Update user info
+            const initials = getInitials(user.name);
+            document.getElementById('user-initials').textContent = initials;
+            document.getElementById('header-initials').textContent = initials;
+            document.getElementById('user-name').textContent = user.name || 'Administrator';
+            document.getElementById('profile-initials').textContent = initials;
+            document.getElementById('profile-name').textContent = user.name || 'Administrator';
+            document.getElementById('profile-email').textContent = user.email;
+            
+            // Set last backup date
+            document.getElementById('last-backup').textContent = new Date().toLocaleDateString();
+            
+            // Load all data
+            await loadUsers();
+            await loadDoctors();
+            await loadAppointments();
+            await loadLocations();
+            
+            // Welcome notification
+            setTimeout(() => {
+                showNotification('info', 'Welcome, Admin!', 'System is running smoothly.');
+            }, 1000);
+        }
+        
+        // Load Users
+        async function loadUsers() {
+            try {
+                users = await api.getUsers();
+                document.getElementById('stat-users').textContent = users.length;
+                document.getElementById('user-count').textContent = users.length;
+                
+                renderUsersTable();
+                renderUserModalTable(users);
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        // Render Users Table
+        function renderUsersTable() {
+            const tbody = document.getElementById('users-tbody');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">No users found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = users.slice(-5).reverse().map(user => {
+                const roleClass = user.role === 'ADMIN' ? 'badge-error' : 
+                                 user.role === 'DOCTOR' ? 'badge-info' : 'badge-success';
+                return `
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="avatar avatar-sm">${getInitials(user.name)}</div>
+                                <div>
+                                    <div class="font-semibold">${user.name}</div>
+                                    <div class="text-muted text-xs">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge ${roleClass}">${user.role}</span></td>
+                        <td><span class="badge badge-success">Active</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Render User Modal Table
+        function renderUserModalTable(userList) {
+            const tbody = document.getElementById('user-modal-tbody');
+            
+            if (userList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No users found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = userList.map(user => {
+                const roleClass = user.role === 'ADMIN' ? 'badge-error' : 
+                                 user.role === 'DOCTOR' ? 'badge-info' : 'badge-success';
+                return `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td><span class="badge ${roleClass}">${user.role}</span></td>
+                        <td>
+                            <button class="btn btn-ghost btn-icon" onclick="viewUser(${user.id})">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </button>
+                            <button class="btn btn-ghost btn-icon" onclick="deleteUser(${user.id})">
+                                <span class="material-symbols-outlined text-error">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Load Doctors
+        async function loadDoctors() {
+            try {
+                doctors = await api.getDoctors();
+                document.getElementById('stat-doctors').textContent = doctors.length;
+                
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+            }
+        }
+        
+        // Load Appointments
+        async function loadAppointments() {
+            try {
+                appointments = await api.getAppointments();
+                document.getElementById('stat-appointments').textContent = appointments.length;
+                
+                renderAppointmentsTable();
+                
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+        
+        // Render Appointments Table
+        function renderAppointmentsTable() {
+            const tbody = document.getElementById('appointments-tbody');
+            
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No appointments found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = appointments.slice(-5).reverse().map(apt => {
+                const patient = apt.user || {};
+                const doctor = apt.doctor || {};
+                const schedule = apt.schedule || {};
+                const statusClass = apt.status === 'CONFIRMED' ? 'badge-success' : 
+                                   apt.status === 'PENDING' ? 'badge-warning' : 
+                                   apt.status === 'COMPLETED' ? 'badge-info' : 'badge-error';
+                return `
+                    <tr>
+                        <td>${patient.name || 'N/A'}</td>
+                        <td>Dr. ${doctor.name || 'N/A'}</td>
+                        <td>${schedule.date ? formatDate(schedule.date) : 'N/A'}</td>
+                        <td><span class="badge ${statusClass}">${apt.status}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Load Locations
+        async function loadLocations() {
+            try {
+                locations = await api.getLocations();
+                document.getElementById('stat-locations').textContent = locations.length;
+                
+                renderLocationsTable();
+                
+            } catch (error) {
+                console.error('Error loading locations:', error);
+            }
+        }
+        
+        // Render Locations Table
+        function renderLocationsTable() {
+            const tbody = document.getElementById('locations-tbody');
+            
+            if (locations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No locations found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = locations.map(loc => `
+                <tr>
+                    <td>${loc.sector || '-'} / ${loc.cell || '-'}</td>
+                    <td>${loc.province}</td>
+                    <td>${loc.district}</td>
+                    <td>
+                        <button class="btn btn-ghost btn-icon" onclick="deleteLocation(${loc.id})">
+                            <span class="material-symbols-outlined text-error">delete</span>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Open User Modal
+        function openUserModal() {
+            document.getElementById('user-modal-backdrop').classList.add('active');
+            document.getElementById('user-modal').classList.add('active');
+            renderUserModalTable(users);
+        }
+        
+        // Close User Modal
+        function closeUserModal() {
+            document.getElementById('user-modal-backdrop').classList.remove('active');
+            document.getElementById('user-modal').classList.remove('active');
+        }
+        
+        // User Search
+        document.getElementById('user-search').addEventListener('input', debounce(function(e) {
+            const query = e.target.value.toLowerCase();
+            const filtered = users.filter(user => 
+                user.name.toLowerCase().includes(query) || 
+                user.email.toLowerCase().includes(query) ||
+                user.role.toLowerCase().includes(query)
+            );
+            renderUserModalTable(filtered);
+        }, 300));
+        
+        // View User
+        function viewUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                alert(`User Details:\n\nName: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nPhone: ${user.phone || 'N/A'}`);
+            }
+        }
+        
+        // Delete User
+        async function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user && user.role === 'ADMIN') {
+                showNotification('error', 'Cannot Delete', 'Cannot delete admin users.');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to delete this user?')) return;
+            
+            showLoading();
+            try {
+                await api.deleteUser(userId);
+                hideLoading();
+                showNotification('success', 'User Deleted', 'User has been removed.');
+                await loadUsers();
+                renderUserModalTable(users);
+            } catch (error) {
+                hideLoading();
+                showNotification('error', 'Error', error.message || 'Could not delete user.');
+            }
+        }
+        
+        // Open Add Location Modal
+        function openAddLocationModal() {
+            document.getElementById('location-modal-backdrop').classList.add('active');
+            document.getElementById('location-modal').classList.add('active');
+        }
+        
+        // Close Location Modal
+        function closeLocationModal() {
+            document.getElementById('location-modal-backdrop').classList.remove('active');
+            document.getElementById('location-modal').classList.remove('active');
+            document.getElementById('location-form').reset();
+        }
+        
+        // Province change handler
+        document.getElementById('location-province').addEventListener('change', function() {
+            const districtSelect = document.getElementById('location-district');
+            const districts = districtsByProvince[this.value] || [];
+            
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        });
+        
+        // Submit Location
+        async function submitLocation() {
+            const province = document.getElementById('location-province').value;
+            const district = document.getElementById('location-district').value;
+            const sector = document.getElementById('location-sector').value;
+            const cell = document.getElementById('location-cell').value;
+            const village = document.getElementById('location-village').value;
+            
+            if (!province || !district || !sector || !cell || !village) {
+                showNotification('error', 'Missing Information', 'Please fill in all fields.');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const locationData = {
+                    province: province,
+                    district: district,
+                    sector: sector,
+                    cell: cell,
+                    village: village
+                };
+                
+                const response = await api.createLocation(locationData);
+                hideLoading();
+                
+                if (response.id) {
+                    closeLocationModal();
+                    showNotification('success', 'Location Added', 'New location has been created.');
+                    await loadLocations();
+                } else {
+                    showNotification('error', 'Error', response.message || 'Could not create location.');
+                }
+            } catch (error) {
+                hideLoading();
+                showNotification('error', 'Error', error.message || 'Could not create location.');
+            }
+        }
+        
+        // Delete Location
+        async function deleteLocation(locationId) {
+            if (!confirm('Are you sure you want to delete this location?')) return;
+            
+            showLoading();
+            
+            try {
+                await api.deleteLocation(locationId);
+                hideLoading();
+                showNotification('success', 'Location Deleted', 'The location has been removed.');
+                await loadLocations();
+            } catch (error) {
+                hideLoading();
+                showNotification('error', 'Error', error.message || 'Could not delete location.');
+            }
+        }
+        
+        // Export Data
+        function exportData() {
+            const data = {
+                users: users,
+                doctors: doctors,
+                appointments: appointments,
+                locations: locations,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `specbooking-export-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showNotification('success', 'Export Complete', 'Data has been exported to JSON file.');
+        }
+        
+        // Open Profile Modal
+        function openProfileModal() {
+            document.getElementById('profile-modal-backdrop').classList.add('active');
+            document.getElementById('profile-modal').classList.add('active');
+        }
+        
+        // Close Profile Modal
+        function closeProfileModal() {
+            document.getElementById('profile-modal-backdrop').classList.remove('active');
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+        
+        // Logout
+        function logout() {
+            showNotification('info', 'Goodbye!', 'You have been logged out.');
+            setTimeout(() => {
+                api.logout();
+            }, 1000);
+        }
+        
+        // Show page content (navigation)
+        function showPageContent(page) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            document.getElementById('current-page-title').textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            
+            if (page === 'users') {
+                openUserModal();
+            } else if (page === 'locations') {
+                showLocationsPage();
+            } else if (page === 'settings') {
+                openProfileModal();
+            } else if (page === 'dashboard') {
+                // Reload dashboard
+                location.reload();
+            } else if (page === 'doctors') {
+                showDoctorsPage();
+            } else if (page === 'appointments') {
+                showAppointmentsPage();
+            } else if (page === 'analytics') {
+                showAnalyticsPage();
+            } else if (page === 'reports') {
+                showReportsPage();
+            }
+        }
+        
+        // Show Doctors Page
+        function showDoctorsPage() {
+            const mainContent = document.querySelector('.main-content');
+            
+            let html = `
+                <div class="page-header">
+                    <h1>Doctor Management</h1>
+                    <p>View and manage registered doctors</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>All Doctors (${doctors.length})</h3>
+                    </div>
+                    <div class="card-body">
+            `;
+            
+            if (doctors.length === 0) {
+                html += `<div class="empty-state"><div class="icon"><span class="material-symbols-outlined">stethoscope</span></div><h3>No Doctors</h3><p>No doctors registered yet.</p></div>`;
+            } else {
+                html += `<div class="table-wrapper"><table class="table"><thead><tr><th>Name</th><th>Specialty</th><th>Phone</th><th>Location</th><th>Actions</th></tr></thead><tbody>`;
+                doctors.forEach(doc => {
+                    html += `
+                        <tr>
+                            <td>Dr. ${doc.name}</td>
+                            <td>${doc.specialty || 'General'}</td>
+                            <td>${doc.phone || 'N/A'}</td>
+                            <td>${doc.location ? `${doc.location.district}, ${doc.location.province}` : 'N/A'}</td>
+                            <td>
+                                <button class="btn btn-ghost btn-icon" onclick="deleteDoctor(${doc.id})">
+                                    <span class="material-symbols-outlined text-error">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody></table></div>`;
+            }
+            
+            html += `</div></div>`;
+            mainContent.innerHTML = html;
+        }
+        
+        // Delete Doctor
+        async function deleteDoctor(doctorId) {
+            if (!confirm('Are you sure you want to delete this doctor?')) return;
+            
+            showLoading();
+            try {
+                await api.deleteDoctor(doctorId);
+                hideLoading();
+                showNotification('success', 'Doctor Deleted', 'Doctor has been removed.');
+                await loadDoctors();
+                showDoctorsPage();
+            } catch (error) {
+                hideLoading();
+                showNotification('error', 'Error', error.message || 'Could not delete doctor.');
+            }
+        }
+        
+        // Show Appointments Page
+        function showAppointmentsPage() {
+            const mainContent = document.querySelector('.main-content');
+            
+            let html = `
+                <div class="page-header">
+                    <h1>Appointment Management</h1>
+                    <p>View all system appointments</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>All Appointments (${appointments.length})</h3>
+                    </div>
+                    <div class="card-body">
+            `;
+            
+            if (appointments.length === 0) {
+                html += `<div class="empty-state"><div class="icon"><span class="material-symbols-outlined">calendar_month</span></div><h3>No Appointments</h3></div>`;
+            } else {
+                html += `<div class="table-wrapper"><table class="table"><thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
+                appointments.forEach(apt => {
+                    const patient = apt.user || {};
+                    const doctor = apt.doctor || {};
+                    const schedule = apt.schedule || {};
+                    const statusClass = getStatusBadgeClass(apt.status);
+                    html += `
+                        <tr>
+                            <td>${patient.name || 'N/A'}</td>
+                            <td>Dr. ${doctor.name || 'N/A'}</td>
+                            <td>${schedule.date ? formatDate(schedule.date) : 'N/A'}</td>
+                            <td>${schedule.startTime ? formatTime(schedule.startTime) : 'N/A'}</td>
+                            <td><span class="badge ${statusClass}">${apt.status}</span></td>
+                            <td>
+                                <button class="btn btn-ghost btn-icon" onclick="deleteAppointment(${apt.id})">
+                                    <span class="material-symbols-outlined text-error">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody></table></div>`;
+            }
+            
+            html += `</div></div>`;
+            mainContent.innerHTML = html;
+        }
+        
+        // Delete Appointment
+        async function deleteAppointment(appointmentId) {
+            if (!confirm('Are you sure you want to delete this appointment?')) return;
+            
+            showLoading();
+            try {
+                await api.deleteAppointment(appointmentId);
+                hideLoading();
+                showNotification('success', 'Appointment Deleted', 'Appointment has been removed.');
+                await loadAppointments();
+                showAppointmentsPage();
+            } catch (error) {
+                hideLoading();
+                showNotification('error', 'Error', error.message || 'Could not delete appointment.');
+            }
+        }
+        
+        // Show Locations Page
+        function showLocationsPage() {
+            const mainContent = document.querySelector('.main-content');
+            
+            let html = `
+                <div class="page-header">
+                    <h1>Location Management</h1>
+                    <p>Manage service locations</p>
+                    <div class="page-header-actions">
+                        <button class="btn btn-primary" onclick="openAddLocationModal()">
+                            <span class="material-symbols-outlined">add</span>
+                            Add Location
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>All Locations (${locations.length})</h3>
+                    </div>
+                    <div class="card-body">
+            `;
+            
+            if (locations.length === 0) {
+                html += `<div class="empty-state"><div class="icon"><span class="material-symbols-outlined">location_on</span></div><h3>No Locations</h3><p>Add locations to enable user registration.</p><button class="btn btn-primary mt-4" onclick="openAddLocationModal()">Add Location</button></div>`;
+            } else {
+                html += `<div class="table-wrapper"><table class="table"><thead><tr><th>Province</th><th>District</th><th>Sector</th><th>Cell</th><th>Village</th><th>Actions</th></tr></thead><tbody>`;
+                locations.forEach(loc => {
+                    html += `
+                        <tr>
+                            <td>${loc.province}</td>
+                            <td>${loc.district}</td>
+                            <td>${loc.sector || '-'}</td>
+                            <td>${loc.cell || '-'}</td>
+                            <td>${loc.village || '-'}</td>
+                            <td>
+                                <button class="btn btn-ghost btn-icon" onclick="deleteLocation(${loc.id})">
+                                    <span class="material-symbols-outlined text-error">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody></table></div>`;
+            }
+            
+            html += `</div></div>`;
+            mainContent.innerHTML = html;
+        }
+        
+        // Show Analytics Page
+        function showAnalyticsPage() {
+            const mainContent = document.querySelector('.main-content');
+            
+            // Calculate statistics
+            const pendingAppts = appointments.filter(a => a.status === 'PENDING').length;
+            const confirmedAppts = appointments.filter(a => a.status === 'CONFIRMED').length;
+            const completedAppts = appointments.filter(a => a.status === 'COMPLETED').length;
+            const cancelledAppts = appointments.filter(a => a.status === 'CANCELLED').length;
+            
+            const patientCount = users.filter(u => u.role === 'PATIENT').length;
+            const doctorCount = users.filter(u => u.role === 'DOCTOR').length;
+            const adminCount = users.filter(u => u.role === 'ADMIN').length;
+            
+            const provinceGroups = {};
+            locations.forEach(loc => {
+                provinceGroups[loc.province] = (provinceGroups[loc.province] || 0) + 1;
+            });
+            
+            let html = `
+                <div class="page-header">
+                    <h1>Analytics Dashboard</h1>
+                    <p>System statistics and insights</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="card">
+                        <div class="card-header"><h3>User Distribution</h3></div>
+                        <div class="card-body">
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Patients</span>
+                                <span class="badge badge-success">${patientCount}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Doctors</span>
+                                <span class="badge badge-info">${doctorCount}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span>Admins</span>
+                                <span class="badge badge-error">${adminCount}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header"><h3>Appointment Status</h3></div>
+                        <div class="card-body">
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Pending</span>
+                                <span class="badge badge-warning">${pendingAppts}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Confirmed</span>
+                                <span class="badge badge-success">${confirmedAppts}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Completed</span>
+                                <span class="badge badge-info">${completedAppts}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span>Cancelled</span>
+                                <span class="badge badge-error">${cancelledAppts}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header"><h3>Locations by Province</h3></div>
+                        <div class="card-body">
+                            ${Object.keys(provinceGroups).length === 0 ? '<p class="text-muted">No locations registered</p>' : 
+                                Object.entries(provinceGroups).map(([province, count]) => `
+                                    <div class="flex justify-between items-center py-2 border-b">
+                                        <span>${province}</span>
+                                        <span class="badge badge-primary">${count}</span>
+                                    </div>
+                                `).join('')
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header"><h3>System Summary</h3></div>
+                        <div class="card-body">
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Total Users</span>
+                                <span class="font-semibold">${users.length}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Total Appointments</span>
+                                <span class="font-semibold">${appointments.length}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span>Total Locations</span>
+                                <span class="font-semibold">${locations.length}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span>Active Doctors</span>
+                                <span class="font-semibold">${doctors.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            mainContent.innerHTML = html;
+        }
+        
+        // Show Reports Page
+        function showReportsPage() {
+            const mainContent = document.querySelector('.main-content');
+            
+            let html = `
+                <div class="page-header">
+                    <h1>System Reports</h1>
+                    <p>Generate and export system reports</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="card">
+                        <div class="card-body text-center py-8">
+                            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--info);">description</span>
+                            <h3 class="mt-4">User Report</h3>
+                            <p class="text-muted mb-4">Export all user data</p>
+                            <button class="btn btn-primary" onclick="exportUsers()">Export Users</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center py-8">
+                            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--success);">stethoscope</span>
+                            <h3 class="mt-4">Doctor Report</h3>
+                            <p class="text-muted mb-4">Export doctor data</p>
+                            <button class="btn btn-primary" onclick="exportDoctors()">Export Doctors</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center py-8">
+                            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--warning);">calendar_month</span>
+                            <h3 class="mt-4">Appointment Report</h3>
+                            <p class="text-muted mb-4">Export appointment history</p>
+                            <button class="btn btn-primary" onclick="exportAppointments()">Export Appointments</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center py-8">
+                            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--accent);">save</span>
+                            <h3 class="mt-4">Full Backup</h3>
+                            <p class="text-muted mb-4">Export all system data</p>
+                            <button class="btn btn-primary" onclick="exportData()">Full Export</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            mainContent.innerHTML = html;
+        }
+        
+        // Export Users
+        function exportUsers() {
+            downloadJSON(users, 'users-export');
+        }
+        
+        // Export Doctors
+        function exportDoctors() {
+            downloadJSON(doctors, 'doctors-export');
+        }
+        
+        // Export Appointments
+        function exportAppointments() {
+            downloadJSON(appointments, 'appointments-export');
+        }
+        
+        // Download JSON helper
+        function downloadJSON(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${filename}-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showNotification('success', 'Export Complete', 'Data has been exported.');
+        }
+        
+        // Sidebar navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPageContent(this.dataset.page);
+            });
+        });
+        
+        // Header avatar click
+        document.getElementById('header-avatar').addEventListener('click', openProfileModal);
+        document.getElementById('sidebar-user').addEventListener('click', openProfileModal);
+        
+        // Close modals on backdrop click
+        document.getElementById('user-modal-backdrop').addEventListener('click', closeUserModal);
+        document.getElementById('location-modal-backdrop').addEventListener('click', closeLocationModal);
+        document.getElementById('profile-modal-backdrop').addEventListener('click', closeProfileModal);
+        
+        // Notifications button
+        document.getElementById('notifications-btn').addEventListener('click', function() {
+            showNotification('info', 'System Status', 'All systems operational.');
+        });
+        
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+    </script>
+</body>
+</html>

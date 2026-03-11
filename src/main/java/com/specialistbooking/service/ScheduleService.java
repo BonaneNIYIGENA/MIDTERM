@@ -1,11 +1,13 @@
 package com.specialistbooking.service;
 
+import com.specialistbooking.dto.request.BulkScheduleRequest;
 import com.specialistbooking.dto.request.ScheduleRequest;
 import com.specialistbooking.entity.Schedule;
 import java.util.List;
 
 public interface ScheduleService {
     Schedule createSchedule(ScheduleRequest request);
+    List<Schedule> createBulkSchedules(BulkScheduleRequest request);
     Schedule getScheduleById(Long id);
     List<Schedule> getAllSchedules();
     List<Schedule> getSchedulesByDoctor(Long doctorId);

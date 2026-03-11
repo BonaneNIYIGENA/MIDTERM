@@ -74,4 +74,10 @@ public class AppointmentController {
             @RequestBody AppointmentReportRequest request) {
         return ResponseEntity.ok(appointmentService.updateReport(appointmentId, request));
     }
+
+    @DeleteMapping("/{appointmentId}/report")
+    public ResponseEntity<Void> deleteReport(@PathVariable Long appointmentId) {
+        appointmentService.deleteReport(appointmentId);
+        return ResponseEntity.noContent().build();
+    }
 }

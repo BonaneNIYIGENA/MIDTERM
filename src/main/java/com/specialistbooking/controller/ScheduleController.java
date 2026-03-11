@@ -1,5 +1,6 @@
 package com.specialistbooking.controller;
 
+import com.specialistbooking.dto.request.BulkScheduleRequest;
 import com.specialistbooking.dto.request.ScheduleRequest;
 import com.specialistbooking.entity.Schedule;
 import com.specialistbooking.service.ScheduleService;
@@ -18,6 +19,11 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<Schedule> create(@RequestBody ScheduleRequest request) {
         return ResponseEntity.ok(scheduleService.createSchedule(request));
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Schedule>> createBulk(@RequestBody BulkScheduleRequest request) {
+        return ResponseEntity.ok(scheduleService.createBulkSchedules(request));
     }
 
     @GetMapping("/{id}")

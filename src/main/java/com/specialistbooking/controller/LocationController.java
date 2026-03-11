@@ -23,4 +23,25 @@ public class LocationController {
     public ResponseEntity<List<Location>> getAll() {
         return ResponseEntity.ok(locationService.getAllLocations());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Location> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(locationService.getLocationById(id));
+    }
+
+    @GetMapping("/province/{province}")
+    public ResponseEntity<List<Location>> byProvince(@PathVariable String province) {
+        return ResponseEntity.ok(locationService.getLocationsByProvince(province));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Location> update(@PathVariable Long id, @RequestBody Location location) {
+        return ResponseEntity.ok(locationService.updateLocation(id, location));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        locationService.deleteLocation(id);
+        return ResponseEntity.noContent().build();
+    }
 }

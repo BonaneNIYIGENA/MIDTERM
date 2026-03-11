@@ -13,4 +13,7 @@ public interface DoctorService {
     void deleteDoctor(Long id);
     Doctor addRegularPatient(Long doctorId, Long userId);
     List<Doctor> getDoctorsBySpecialty(String specialty);
+    List<Doctor> getDoctorsByProvince(String province);
+    List<Doctor> searchDoctors(String specialty, String province);
+    List<Doctor> searchByName(String name);
 }

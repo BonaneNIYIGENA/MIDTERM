@@ -64,6 +64,21 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public List<Doctor> getDoctorsByProvince(String province) {
+        return doctorRepository.findByLocation_ProvinceIgnoreCase(province);
+    }
+
+    @Override
+    public List<Doctor> searchDoctors(String specialty, String province) {
+        return doctorRepository.searchDoctors(specialty, province);
+    }
+
+    @Override
+    public List<Doctor> searchByName(String name) {
+        return doctorRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    @Override
     public Doctor getDoctorById(Long id) {
         return doctorRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));

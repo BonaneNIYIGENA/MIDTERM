@@ -15,6 +15,7 @@ public interface AppointmentService {
     AppointmentReport writeReport(Long appointmentId, AppointmentReportRequest request);
     AppointmentReport getReport(Long appointmentId);
     AppointmentReport updateReport(Long appointmentId, AppointmentReportRequest request);
+    void deleteReport(Long appointmentId);
     List<Appointment> getAppointmentsByDoctor(Long doctorId);
     List<Appointment> getAppointmentsByUser(Long userId);
     void deleteAppointment(Long id);

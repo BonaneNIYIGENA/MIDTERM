@@ -109,4 +109,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         report.setRemarks(request.getRemarks());
         return reportRepository.save(report);
     }
+
+    @Override
+    public void deleteReport(Long appointmentId) {
+        AppointmentReport report = getReport(appointmentId);
+        reportRepository.delete(report);
+    }
 }
